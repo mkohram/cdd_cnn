@@ -10,6 +10,15 @@ def window(matrix, ws):
 
     return np.vstack(data_list)
 
+def window_recurrent(sequence, ws):
+    data_list = []
+    
+    for i in range(0, len(sequence) - ws + 1, 2):
+        data_list.append(sequence[i:i+ws])
+
+    return np.vstack(data_list)
+
+
 def smp_to_pssm(smpfile, full=False, order='ncbistdaa'):
     """
     Convert an smp file to a PSSM matrix.
@@ -43,3 +52,8 @@ def smp_to_pssm(smpfile, full=False, order='ncbistdaa'):
     else:
         # retrieve columns that refer to amino acids
         return full_pssm_matrix[:, amino_acid_column_indices]
+
+def rolling_window(a, window):
+    shape = a.shape[:-1] + (a.shape[-1] - window + 1, window)
+    strides = a.strides + (a.strides[-1],)
+    return np.lib.stride_tricks.as_strided(a, shape=shape, strides=strides)
